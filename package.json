@@ -1,0 +1,53 @@
+{
+    "name": "highlight-logical-line",
+    "displayName": "Highlight Logical Line",
+    "description": "For word-wrapped line it seems logical to highlight the entire line that spans several visual lines.",
+    "version": "0.0.1",
+    "publisher": "usernamehw",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/usernamehw/vscode-highlight-logical-line"
+    },
+    "bugs": {
+        "url": "https://github.com/usernamehw/vscode-highlight-logical-line/issues"
+    },
+    "engines": {
+        "vscode": "^1.20.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "highlight",
+        "line-highlight"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "colors": [{
+            "id": "highlightLogicalLine.background",
+            "description": "Color for active editor line (even when it takes multiple lines).",
+            "defaults": {
+                "dark": "editor.lineHighlightBackground",
+                "light": "editor.lineHighlightBackground",
+                "highContrast": "editor.lineHighlightBackground"
+            }
+        }]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.21",
+        "@types/node": "^8.10.25",
+        "@types/mocha": "^2.2.42"
+    }
+}
