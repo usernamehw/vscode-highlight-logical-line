@@ -1,6 +1,7 @@
 # Highlight logical line
 
 Highlights the entire active line:
+
 ![Example](/img/example.gif)
 
 Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`:
