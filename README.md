@@ -5,7 +5,7 @@ Highlights the entire active line:
 
 Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`:
 
-```json
+```javascript
 "workbench.colorCustomizations": {
     "highlightLogicalLine.background": "#00000050",
     // also can be changed per each theme
