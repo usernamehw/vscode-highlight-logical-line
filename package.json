@@ -2,7 +2,7 @@
     "name": "highlight-logical-line",
     "displayName": "Highlight Logical Line",
     "description": "For word-wrapped line it seems logical to highlight the entire line that spans several visual lines.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "usernamehw",
     "license": "MIT",
     "repository": {
@@ -27,15 +27,17 @@
     ],
     "main": "./out/extension",
     "contributes": {
-        "colors": [{
-            "id": "highlightLogicalLine.background",
-            "description": "Color for active editor line (even when it takes multiple lines).",
-            "defaults": {
-                "dark": "#00000040",
-                "light": "#00000020",
-                "highContrast": "#ffffff20"
+        "colors": [
+            {
+                "id": "highlightLogicalLine.background",
+                "description": "Color for active editor line (even when it takes multiple lines).",
+                "defaults": {
+                    "dark": "#00000040",
+                    "light": "#00000020",
+                    "highContrast": "#ffffff20"
+                }
             }
-        }]
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
