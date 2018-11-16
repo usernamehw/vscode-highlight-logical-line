@@ -1,31 +1,26 @@
 'use strict'
-import { window, Range, Position, ThemeColor } from 'vscode'
+import { window, Range, Position, ThemeColor, workspace, Disposable } from 'vscode'
 
 export function activate() {
-    let bg = new ThemeColor('highlightLogicalLine.background');
-    const decorationType = window.createTextEditorDecorationType({
+    const disposableEvents: Array<Disposable> = [];
+    const decorationOptions = {
         isWholeLine: true,
-        backgroundColor: bg || 'rgba(65, 166, 217, 0.3)',
-    });
+        backgroundColor: new ThemeColor('highlightLogicalLine.background'),
+    }
+    let decorationType = window.createTextEditorDecorationType(decorationOptions);
+    const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
 
     let activeEditor = window.activeTextEditor;
     let isLineChanged: boolean;
     let lastActivePosition: Position | undefined;
     updateDecorations(true);
 
-    window.onDidChangeActiveTextEditor(() => {
-        lastActivePosition = undefined;
+    disposableEvents.push(onEditorChange(), onCursorChange());
 
-        activeEditor = window.activeTextEditor
-        updateDecorations(true)
-
-        if (!activeEditor) return;
-        lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
-    });
-
-    window.onDidChangeTextEditorSelection(() => {
-        updateDecorations();
-    });
+    if (editorWordWrap === 'off') {
+        decorationType.dispose();
+        disposeEventListeners(disposableEvents);
+    }
 
     function updateDecorations(updateAllVisibleEditors = false) {
         if (updateAllVisibleEditors) {
@@ -51,6 +46,45 @@ export function activate() {
         if (!activeEditor) return;
         lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
     }
+
+    workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('editor.wordWrap')) {
+            const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
+            if (editorWordWrap === 'off') {
+                disposeEventListeners(disposableEvents);
+                decorationType.dispose();
+                console.log(editorWordWrap);
+                return;
+            } else {
+                decorationType = window.createTextEditorDecorationType(decorationOptions);
+                updateDecorations(true);
+                disposableEvents.push(onEditorChange(), onCursorChange());
+            }
+        }
+    });
+
+    function onEditorChange() {
+        return window.onDidChangeActiveTextEditor(() => {
+            lastActivePosition = undefined;
+
+            activeEditor = window.activeTextEditor
+            updateDecorations(true)
+
+            if (!activeEditor) return;
+            lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
+        });
+    }
+    function onCursorChange() {
+        return window.onDidChangeTextEditorSelection(() => {
+            updateDecorations();
+        });
+    }
+}
+
+function disposeEventListeners(disposables: Array<Disposable>) {
+    disposables.forEach((disposable: Disposable) => {
+        disposable.dispose();
+    });
 }
 
 export function deactivate() { }
