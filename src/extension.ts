@@ -1,12 +1,12 @@
-'use strict'
-import { window, Range, Position, ThemeColor, workspace, Disposable } from 'vscode'
+'use strict';
+import { Disposable, Position, Range, ThemeColor, window, workspace } from 'vscode';
 
 export function activate() {
-	const disposableEvents: Array<Disposable> = [];
+	const disposableEvents: Disposable[] = [];
 	const decorationOptions = {
 		isWholeLine: true,
 		backgroundColor: new ThemeColor('highlightLogicalLine.background'),
-	}
+	};
 	let decorationType = window.createTextEditorDecorationType(decorationOptions);
 	const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
 
@@ -24,7 +24,7 @@ export function activate() {
 
 	function updateDecorations(updateAllVisibleEditors = false) {
 		if (updateAllVisibleEditors) {
-			window.visibleTextEditors.forEach((editor) => {
+			window.visibleTextEditors.forEach(editor => {
 				const currentPosition = editor.selection.active;
 				const newDecoration = { range: new Range(currentPosition, currentPosition) };
 				editor.setDecorations(decorationType, [newDecoration]);
@@ -36,10 +36,10 @@ export function activate() {
 				isLineChanged = lastActivePosition.line !== activePosition.line;
 			}
 
-			const newDecoration = { range: new Range(activePosition, activePosition) }
+			const newDecoration = { range: new Range(activePosition, activePosition) };
 
 			if (lastActivePosition === undefined || isLineChanged) {
-				activeEditor.setDecorations(decorationType, [newDecoration])
+				activeEditor.setDecorations(decorationType, [newDecoration]);
 			}
 		}
 
@@ -67,8 +67,7 @@ export function activate() {
 		return window.onDidChangeActiveTextEditor(() => {
 			lastActivePosition = undefined;
 
-			activeEditor = window.activeTextEditor
-			updateDecorations(true)
+			updateDecorations(true);
 
 			if (!activeEditor) return;
 			lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
@@ -81,7 +80,7 @@ export function activate() {
 	}
 }
 
-function disposeEventListeners(disposables: Array<Disposable>) {
+function disposeEventListeners(disposables: Disposable[]) {
 	disposables.forEach((disposable: Disposable) => {
 		disposable.dispose();
 	});
