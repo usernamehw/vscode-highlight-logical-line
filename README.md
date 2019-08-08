@@ -2,7 +2,7 @@
 
 Highlights the entire active line:
 
-![Example](/img/example.gif)
+![Example](/img/demo.gif)
 
 Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`:
 
