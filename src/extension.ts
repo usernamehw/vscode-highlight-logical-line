@@ -13,7 +13,7 @@ export function activate() {
 	let activeEditor = window.activeTextEditor;
 	let isLineChanged: boolean;
 	let lastActivePosition: Position | undefined;
-	updateDecorations(true);
+	updateAllEditorDecorations();
 
 	disposableEvents.push(onEditorChange(), onCursorChange());
 
@@ -22,25 +22,25 @@ export function activate() {
 		disposeEventListeners(disposableEvents);
 	}
 
-	function updateDecorations(updateAllVisibleEditors = false) {
-		if (updateAllVisibleEditors) {
-			window.visibleTextEditors.forEach(editor => {
-				const currentPosition = editor.selection.active;
-				const newDecoration = { range: new Range(currentPosition, currentPosition) };
-				editor.setDecorations(decorationType, [newDecoration]);
-			});
-		} else {
-			if (!activeEditor) return;
-			const activePosition = activeEditor.selection.active;
-			if (lastActivePosition) {
-				isLineChanged = lastActivePosition.line !== activePosition.line;
-			}
+	function updateAllEditorDecorations() {
+		window.visibleTextEditors.forEach(editor => {
 
-			const newDecoration = { range: new Range(activePosition, activePosition) };
+			const currentPosition = editor.selection.active;
+			const newDecoration = { range: new Range(currentPosition, currentPosition) };
+			editor.setDecorations(decorationType, [newDecoration]);
+		});
+	}
+	function updateDecorations() {
+		if (!activeEditor) return;
+		const activePosition = activeEditor.selection.active;
+		if (lastActivePosition) {
+			isLineChanged = lastActivePosition.line !== activePosition.line;
+		}
 
-			if (lastActivePosition === undefined || isLineChanged) {
-				activeEditor.setDecorations(decorationType, [newDecoration]);
-			}
+		const newDecoration = { range: new Range(activePosition, activePosition) };
+
+		if (lastActivePosition === undefined || isLineChanged) {
+			activeEditor.setDecorations(decorationType, [newDecoration]);
 		}
 
 		if (!activeEditor) return;
@@ -53,21 +53,21 @@ export function activate() {
 			if (editorWordWrap === 'off') {
 				disposeEventListeners(disposableEvents);
 				decorationType.dispose();
-				console.log(editorWordWrap);
 				return;
 			} else {
 				decorationType = window.createTextEditorDecorationType(decorationOptions);
-				updateDecorations(true);
+				updateAllEditorDecorations();
 				disposableEvents.push(onEditorChange(), onCursorChange());
 			}
 		}
 	});
 
 	function onEditorChange() {
-		return window.onDidChangeActiveTextEditor(() => {
+		return window.onDidChangeActiveTextEditor(textEditor => {
 			lastActivePosition = undefined;
 
-			updateDecorations(true);
+			activeEditor = textEditor;
+			updateAllEditorDecorations();
 
 			if (!activeEditor) return;
 			lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
