@@ -2,7 +2,7 @@
 	"name": "highlight-logical-line",
 	"displayName": "Highlight Logical Line",
 	"description": "For word-wrapped line it seems logical to highlight the entire line that spans several visual lines.",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "usernamehw",
 	"license": "MIT",
 	"repository": {
