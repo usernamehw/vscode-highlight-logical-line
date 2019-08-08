@@ -2,8 +2,7 @@
 import { window, workspace } from 'vscode';
 import * as vscode from 'vscode';
 
-export function activate() {
-	const disposables: vscode.Disposable[] = [];
+export function activate(context: vscode.ExtensionContext) {
 	const decorationOptions = {
 		isWholeLine: true,
 		backgroundColor: new vscode.ThemeColor('highlightLogicalLine.background'),
@@ -66,11 +65,11 @@ export function activate() {
 		}
 		const editorWordWrap = workspace.getConfiguration('editor', null).get('wordWrap');
 		if (editorWordWrap === 'off') {
-			disposeAllEventListeners(disposables);
+			disposeAllEventListeners(context.subscriptions);
 		} else {
 			decorationType = window.createTextEditorDecorationType(decorationOptions);
 			updateAllEditorDecorations();
-			disposables.push(onActiveEditorChange(), onCursorChange());
+			context.subscriptions.push(onActiveEditorChange(), onCursorChange());
 		}
 	}
 }
