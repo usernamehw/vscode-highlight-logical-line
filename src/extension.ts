@@ -20,9 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function updateAllEditorDecorations() {
 		window.visibleTextEditors.forEach(editor => {
-			const currentPosition = editor.selection.active;
+			const activePosition = editor.selection.active;
 			editor.setDecorations(decorationType, [{
-				range: new vscode.Range(currentPosition, currentPosition),
+				range: new vscode.Range(activePosition, activePosition),
 			}]);
 		});
 	}
