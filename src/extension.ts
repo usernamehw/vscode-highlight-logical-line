@@ -10,7 +10,6 @@ export function activate() {
 	};
 	let decorationType: vscode.TextEditorDecorationType;
 	let activeEditor = window.activeTextEditor;
-	let isLineChanged: boolean;
 	let lastActivePosition: vscode.Position | undefined;
 
 	wordWrapCheck();
@@ -30,21 +29,21 @@ export function activate() {
 	function updateDecorations() {
 		if (!activeEditor) return;
 		const activePosition = activeEditor.selection.active;
+		let isLineChanged = false;
 		if (lastActivePosition) {
 			isLineChanged = lastActivePosition.line !== activePosition.line;
 		}
 
-		const newDecoration = { range: new vscode.Range(activePosition, activePosition) };
-
 		if (lastActivePosition === undefined || isLineChanged) {
-			activeEditor.setDecorations(decorationType, [newDecoration]);
+			activeEditor.setDecorations(decorationType, [{
+				range: new vscode.Range(activePosition, activePosition),
+			}]);
 		}
 
-		if (!activeEditor) return;
-		lastActivePosition = new vscode.Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
+		lastActivePosition = activePosition;
 	}
 
-	function onEditorChange() {
+	function onActiveEditorChange() {
 		return window.onDidChangeActiveTextEditor(textEditor => {
 			lastActivePosition = undefined;
 
@@ -52,7 +51,8 @@ export function activate() {
 			updateAllEditorDecorations();
 
 			if (!activeEditor) return;
-			lastActivePosition = new vscode.Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
+
+			lastActivePosition = activeEditor.selection.active;
 		});
 	}
 	function onCursorChange() {
@@ -70,7 +70,7 @@ export function activate() {
 		} else {
 			decorationType = window.createTextEditorDecorationType(decorationOptions);
 			updateAllEditorDecorations();
-			disposables.push(onEditorChange(), onCursorChange());
+			disposables.push(onActiveEditorChange(), onCursorChange());
 		}
 	}
 }
