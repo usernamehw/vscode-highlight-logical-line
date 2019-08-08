@@ -75,7 +75,7 @@
 		],
 		"ordered-imports": true,
 		"no-eval": true,
-		"no-null-keyword": true,
+		"no-null-keyword": false,
 		"triple-equals": [
 			true,
 			"allow-undefined-check"

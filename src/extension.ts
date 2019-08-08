@@ -1,32 +1,29 @@
 'use strict';
-import { Disposable, Position, Range, ThemeColor, window, workspace } from 'vscode';
+import { window, workspace } from 'vscode';
+import * as vscode from 'vscode';
 
 export function activate() {
-	const disposableEvents: Disposable[] = [];
+	const disposables: vscode.Disposable[] = [];
 	const decorationOptions = {
 		isWholeLine: true,
-		backgroundColor: new ThemeColor('highlightLogicalLine.background'),
+		backgroundColor: new vscode.ThemeColor('highlightLogicalLine.background'),
 	};
-	let decorationType = window.createTextEditorDecorationType(decorationOptions);
-	const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
-
+	let decorationType: vscode.TextEditorDecorationType;
 	let activeEditor = window.activeTextEditor;
 	let isLineChanged: boolean;
-	let lastActivePosition: Position | undefined;
-	updateAllEditorDecorations();
+	let lastActivePosition: vscode.Position | undefined;
 
-	disposableEvents.push(onEditorChange(), onCursorChange());
-
-	if (editorWordWrap === 'off') {
-		decorationType.dispose();
-		disposeAllEventListeners(disposableEvents);
-	}
+	wordWrapCheck();
+	workspace.onDidChangeConfiguration(event => {
+		if (event.affectsConfiguration('editor.wordWrap')) {
+			wordWrapCheck();
+		}
+	});
 
 	function updateAllEditorDecorations() {
 		window.visibleTextEditors.forEach(editor => {
-
 			const currentPosition = editor.selection.active;
-			const newDecoration = { range: new Range(currentPosition, currentPosition) };
+			const newDecoration = { range: new vscode.Range(currentPosition, currentPosition) };
 			editor.setDecorations(decorationType, [newDecoration]);
 		});
 	}
@@ -37,30 +34,15 @@ export function activate() {
 			isLineChanged = lastActivePosition.line !== activePosition.line;
 		}
 
-		const newDecoration = { range: new Range(activePosition, activePosition) };
+		const newDecoration = { range: new vscode.Range(activePosition, activePosition) };
 
 		if (lastActivePosition === undefined || isLineChanged) {
 			activeEditor.setDecorations(decorationType, [newDecoration]);
 		}
 
 		if (!activeEditor) return;
-		lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
+		lastActivePosition = new vscode.Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
 	}
-
-	workspace.onDidChangeConfiguration(event => {
-		if (event.affectsConfiguration('editor.wordWrap')) {
-			const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
-			if (editorWordWrap === 'off') {
-				disposeAllEventListeners(disposableEvents);
-				decorationType.dispose();
-				return;
-			} else {
-				decorationType = window.createTextEditorDecorationType(decorationOptions);
-				updateAllEditorDecorations();
-				disposableEvents.push(onEditorChange(), onCursorChange());
-			}
-		}
-	});
 
 	function onEditorChange() {
 		return window.onDidChangeActiveTextEditor(textEditor => {
@@ -70,7 +52,7 @@ export function activate() {
 			updateAllEditorDecorations();
 
 			if (!activeEditor) return;
-			lastActivePosition = new Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
+			lastActivePosition = new vscode.Position(activeEditor.selection.active.line, activeEditor.selection.active.character);
 		});
 	}
 	function onCursorChange() {
@@ -78,11 +60,26 @@ export function activate() {
 			updateDecorations();
 		});
 	}
+	function wordWrapCheck() {
+		if (decorationType) {
+			decorationType.dispose();
+		}
+		const editorWordWrap = workspace.getConfiguration('editor', null).get('wordWrap');
+		if (editorWordWrap === 'off') {
+			disposeAllEventListeners(disposables);
+		} else {
+			decorationType = window.createTextEditorDecorationType(decorationOptions);
+			updateAllEditorDecorations();
+			disposables.push(onEditorChange(), onCursorChange());
+		}
+	}
 }
 
-function disposeAllEventListeners(disposables: Disposable[]) {
-	disposables.forEach((disposable: Disposable) => {
-		disposable.dispose();
+function disposeAllEventListeners(disposables: vscode.Disposable[]) {
+	disposables.forEach(disposable => {
+		if (disposable) {
+			disposable.dispose();
+		}
 	});
 }
 
