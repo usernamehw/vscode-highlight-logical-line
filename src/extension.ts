@@ -19,7 +19,7 @@ export function activate() {
 
 	if (editorWordWrap === 'off') {
 		decorationType.dispose();
-		disposeEventListeners(disposableEvents);
+		disposeAllEventListeners(disposableEvents);
 	}
 
 	function updateAllEditorDecorations() {
@@ -51,7 +51,7 @@ export function activate() {
 		if (event.affectsConfiguration('editor.wordWrap')) {
 			const editorWordWrap = workspace.getConfiguration('editor').get('wordWrap');
 			if (editorWordWrap === 'off') {
-				disposeEventListeners(disposableEvents);
+				disposeAllEventListeners(disposableEvents);
 				decorationType.dispose();
 				return;
 			} else {
@@ -80,7 +80,7 @@ export function activate() {
 	}
 }
 
-function disposeEventListeners(disposables: Disposable[]) {
+function disposeAllEventListeners(disposables: Disposable[]) {
 	disposables.forEach((disposable: Disposable) => {
 		disposable.dispose();
 	});
