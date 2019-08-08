@@ -1,10 +1,20 @@
-# Change Log
+## 0.0.4 `08 Aug 2019`
 
-## 0.0.2 (16 Nov 2018)
+- 🔨 Update dependencies
+- 🔨 Reduce `.gif` size
+- 🔨 Refactor
+- 🐛 Dispose decoration when  `"editor.wordWrap"` changes
 
-- Don't activate when `wordWrap` is `off`. Use transparent bg. Fixes ([#1][i1])
+## 0.0.3 `???`
 
-## 0.0.1 (28 Oct 2018)
+- ???
+
+## 0.0.2 `16 Nov 2018`
+
+- Don't activate when `"editor.wordWrap"` is `"off"`.
+- Use transparent bg. ([Fixes #1][i1])
+
+## 0.0.1 `28 Oct 2018`
 
 - Initial release
 
