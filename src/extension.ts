@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
 	};
 	let decorationType: vscode.TextEditorDecorationType;
 	let activeEditor = window.activeTextEditor;
-	let lastActivePosition: vscode.Position | undefined;
+	let lastPositionLine = 999999;
 
 	wordWrapCheck();
 	workspace.onDidChangeConfiguration(event => {
@@ -29,36 +29,30 @@ export function activate(context: vscode.ExtensionContext) {
 	function updateDecorations() {
 		if (!activeEditor) return;
 		const activePosition = activeEditor.selection.active;
-		let isLineChanged = false;
-		if (lastActivePosition) {
-			isLineChanged = lastActivePosition.line !== activePosition.line;
-		}
 
-		if (lastActivePosition === undefined || isLineChanged) {
+		if (lastPositionLine !== activePosition.line) {
 			activeEditor.setDecorations(decorationType, [{
 				range: new vscode.Range(activePosition, activePosition),
 			}]);
 		}
 
-		lastActivePosition = activePosition;
+		lastPositionLine = activePosition.line;
 	}
 
 	function onActiveEditorChange() {
 		return window.onDidChangeActiveTextEditor(textEditor => {
-			lastActivePosition = undefined;
+			lastPositionLine = 999999;
 
 			activeEditor = textEditor;
 			updateAllEditorDecorations();
 
 			if (!activeEditor) return;
 
-			lastActivePosition = activeEditor.selection.active;
+			lastPositionLine = activeEditor.selection.active.line;
 		});
 	}
 	function onCursorChange() {
-		return window.onDidChangeTextEditorSelection(() => {
-			updateDecorations();
-		});
+		return window.onDidChangeTextEditorSelection(updateDecorations);
 	}
 	function wordWrapCheck() {
 		if (decorationType) {
