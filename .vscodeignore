@@ -9,3 +9,5 @@ vsc-extension-quickstart.md
 tslint.json
 package-lock.json
 .gitattributes
+
+img/demo.gif

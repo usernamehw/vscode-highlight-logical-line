@@ -2,7 +2,7 @@
 
 Highlights the entire active line:
 
-![Example](/img/demo.gif)
+![Demo](https://raw.githubusercontent.com/usernamehw/vscode-highlight-logical-line/master/img/demo.gif)
 
 Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`:
 
