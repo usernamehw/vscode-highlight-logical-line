@@ -20,3 +20,8 @@ Recommended Settings:
 ```json
 "editor.renderLineHighlight": "gutter",
 ```
+
+It is also recommended to use transparent colors:
+
+- ❌ `#000000`
+- ✅ `#00000088`
