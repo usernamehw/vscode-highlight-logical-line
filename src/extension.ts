@@ -1,6 +1,4 @@
-'use strict';
-import { window, workspace } from 'vscode';
-import * as vscode from 'vscode';
+import vscode, { window, workspace } from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
 	const decorationOptions = {
@@ -27,7 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	}
 	function updateDecorations() {
-		if (!activeEditor) return;
+		if (!activeEditor) {
+			return;
+		}
 		const activePosition = activeEditor.selection.active;
 
 		if (lastPositionLine !== activePosition.line) {
@@ -46,7 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
 			activeEditor = textEditor;
 			updateAllEditorDecorations();
 
-			if (!activeEditor) return;
+			if (!activeEditor) {
+				return;
+			}
 
 			lastPositionLine = activeEditor.selection.active.line;
 		});

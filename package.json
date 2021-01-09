@@ -13,17 +13,18 @@
 		"url": "https://github.com/usernamehw/vscode-highlight-logical-line/issues"
 	},
 	"engines": {
-		"vscode": "^1.20.0"
+		"vscode": "^1.50.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"keywords": [
 		"highlight",
-		"line-highlight"
+		"line",
+		"wrap"
 	],
 	"activationEvents": [
-		"*"
+		"onStartupFinished"
 	],
 	"main": "./out/extension",
 	"contributes": {
@@ -42,11 +43,14 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install"
+		"watch": "tsc -watch -p ./"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.20.0",
-		"typescript": "^3.5.3"
+		"@types/vscode": "^1.50.0",
+		"@typescript-eslint/eslint-plugin": "^4.12.0",
+		"@typescript-eslint/parser": "^4.12.0",
+		"eslint": "^7.17.0",
+		"eslint-plugin-no-autofix": "^1.0.2",
+		"typescript": "^4.1.3"
 	}
 }
