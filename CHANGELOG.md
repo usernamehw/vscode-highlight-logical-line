@@ -1,3 +1,7 @@
+## 0.0.7 `09 Jan 2021`
+
+- - 🐛 Doesn't work with per file type settings
+
 ## 0.0.5 `18 Sep 2019`
 
 - 🔨 Reference `.gif` from the github. Extension size **160Kb** => **10Kb**
