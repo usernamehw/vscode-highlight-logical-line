@@ -6,11 +6,11 @@
 
 Highlights the entire active line:
 
-![Demo](https://raw.githubusercontent.com/usernamehw/vscode-highlight-logical-line/master/img/demo.gif)
+![Demo](./img/demo.gif)
 
-Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`:
+Color can be changed in `Settings`:
 
-```javascript
+```js
 "workbench.colorCustomizations": {
 	"highlightLogicalLine.background": "#00000030",
 	// also can be changed per each theme
@@ -21,7 +21,7 @@ Uses `"editor.lineHighlightBackground"` by default. Can be changed in `Settings`
 ```
 
 Recommended Settings:
-```json
+```js
 "editor.renderLineHighlight": "gutter",
 ```
 

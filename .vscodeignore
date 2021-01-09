@@ -11,3 +11,4 @@ package-lock.json
 .gitattributes
 
 img/demo.gif
+node_modules
