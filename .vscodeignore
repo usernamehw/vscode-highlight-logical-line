@@ -12,3 +12,4 @@ package-lock.json
 
 img/demo.gif
 node_modules
+out
