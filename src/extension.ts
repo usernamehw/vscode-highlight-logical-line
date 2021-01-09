@@ -1,6 +1,6 @@
-import vscode, { window, workspace } from 'vscode';
+import vscode, { Disposable, TextEditor, window, workspace } from 'vscode';
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate() {
 	const decorationOptions = {
 		isWholeLine: true,
 		backgroundColor: new vscode.ThemeColor('highlightLogicalLine.background'),
@@ -8,12 +8,27 @@ export function activate(context: vscode.ExtensionContext) {
 	let decorationType: vscode.TextEditorDecorationType;
 	let activeEditor = window.activeTextEditor;
 	let lastPositionLine = 999999;
+	let selectionChangeDisposable: Disposable | undefined;
+	let isActive = false;
 
-	wordWrapCheck();
+	wordWrapCheck(vscode.window.activeTextEditor);
+
 	workspace.onDidChangeConfiguration(event => {
 		if (event.affectsConfiguration('editor.wordWrap')) {
-			wordWrapCheck();
+			wordWrapCheck(vscode.window.activeTextEditor);
 		}
+	});
+	window.onDidChangeActiveTextEditor(textEditor => {
+		lastPositionLine = 999999;
+
+		wordWrapCheck(textEditor);
+		activeEditor = textEditor;
+
+		if (!activeEditor) {
+			return;
+		}
+
+		lastPositionLine = activeEditor.selection.active.line;
 	});
 
 	function updateAllEditorDecorations() {
@@ -24,7 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
 			}]);
 		});
 	}
-	function updateDecorations() {
+
+	function onDidChangeTextEditorSelection(e: vscode.TextEditorSelectionChangeEvent) {
 		if (!activeEditor) {
 			return;
 		}
@@ -39,44 +55,36 @@ export function activate(context: vscode.ExtensionContext) {
 		lastPositionLine = activePosition.line;
 	}
 
-	function onActiveEditorChange() {
-		return window.onDidChangeActiveTextEditor(textEditor => {
-			lastPositionLine = 999999;
+	/**
+	 * Update events listeners and decorations in 2 cases:
+	 * - Setting 'editor.wordWrap' changed
+	 * - Active text editor/tab changed
+	 */
+	function wordWrapCheck(editor: TextEditor | undefined) {
+		const editorWordWrap = workspace.getConfiguration('editor', editor?.document).get('wordWrap');
 
-			activeEditor = textEditor;
-			updateAllEditorDecorations();
-
-			if (!activeEditor) {
+		if (editorWordWrap === 'off') {
+			disposeAll([selectionChangeDisposable, decorationType]);
+			isActive = false;
+		} else {
+			if (isActive) {
 				return;
 			}
-
-			lastPositionLine = activeEditor.selection.active.line;
-		});
-	}
-	function onCursorChange() {
-		return window.onDidChangeTextEditorSelection(updateDecorations);
-	}
-	function wordWrapCheck() {
-		if (decorationType) {
-			decorationType.dispose();
-		}
-		const editorWordWrap = workspace.getConfiguration('editor', null).get('wordWrap');
-		if (editorWordWrap === 'off') {
-			disposeAllEventListeners(context.subscriptions);
-		} else {
 			decorationType = window.createTextEditorDecorationType(decorationOptions);
+			selectionChangeDisposable = window.onDidChangeTextEditorSelection(onDidChangeTextEditorSelection);
+
 			updateAllEditorDecorations();
-			context.subscriptions.push(onActiveEditorChange(), onCursorChange());
+			isActive = true;
 		}
 	}
 }
 
-function disposeAllEventListeners(disposables: vscode.Disposable[]) {
-	disposables.forEach(disposable => {
+function disposeAll(disposables: (Disposable | undefined)[]) {
+	for (const disposable of disposables) {
 		if (disposable) {
 			disposable.dispose();
 		}
-	});
+	}
 }
 
-export function deactivate() { }
+export function deactivate() {}
