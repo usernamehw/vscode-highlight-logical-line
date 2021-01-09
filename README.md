@@ -1,5 +1,9 @@
 # Highlight logical line
 
+### Please, upvote this feature to be in the core editor: [vscode/36839](https://github.com/microsoft/vscode/issues/36839)
+
+---
+
 Highlights the entire active line:
 
 ![Demo](https://raw.githubusercontent.com/usernamehw/vscode-highlight-logical-line/master/img/demo.gif)
