@@ -1,7 +1,7 @@
 .vscode/**
 .vscode-test/**
 out/test/**
-out/**/*.map
+**/*.map
 src/**
 .gitignore
 tsconfig.json
@@ -13,3 +13,5 @@ package-lock.json
 img/demo.gif
 node_modules
 out
+webpack.config.js
+LICENSE
