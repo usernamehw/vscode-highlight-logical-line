@@ -23,6 +23,9 @@
 		"line",
 		"wrap"
 	],
+	"extensionKind": [
+		"ui"
+	],
 	"activationEvents": [
 		"onStartupFinished"
 	],
